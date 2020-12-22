@@ -20,10 +20,9 @@ if pkg:
 else:
     from tensorflow.lite.python.interpreter import Interpreter
     
-CWD_PATH = os.getcwd()
 TF_MODEL_DIRECTORY = 'tflite_graph'
 TF_GRAPH_NAME ='face.tflite'
-TF_GRAPH_PATH =  os.path.join(CWD_PATH, TF_MODEL_DIRECTORY, TF_GRAPH_NAME)
+TF_GRAPH_PATH =  os.path.join(TF_MODEL_DIRECTORY, TF_GRAPH_NAME)
 FACE_THRESHOLD = 0.7
 interpreter = Interpreter(model_path=TF_GRAPH_PATH)
 interpreter.allocate_tensors()
