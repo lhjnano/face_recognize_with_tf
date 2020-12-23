@@ -152,10 +152,10 @@ def predict_faces(knn_clf, image, X_face_locations) :
     if len(X_face_locations) == 0:
         return []
         
-    timestamp = time.time()
+    #timestamp = time.time()
     # Find encodings for faces in the test iamge
     faces_encodings = face_recognition.face_encodings(image, known_face_locations=X_face_locations, model='large')
-    print(f'faces_encodings : {time.time()-timestamp}s')
+    #print(f'faces_encodings : {time.time()-timestamp}s')
     # Use the KNN model to find the best matches for the test face
     closest_distances = knn_clf.kneighbors(faces_encodings, n_neighbors=2)
     are_matches = [closest_distances[0][i][0] <= distance_threshold for i in range(len(X_face_locations))]
@@ -165,7 +165,7 @@ def predict_faces(knn_clf, image, X_face_locations) :
 
 def show_prediction(image, predictions, is_showing=False) :
 
-    frame_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+    #frame_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     
     for name, (top, right, bottom, left) in predictions:
     
@@ -184,21 +184,21 @@ def show_prediction(image, predictions, is_showing=False) :
         cv2.rectangle(image, (left, label_top-labelSize[1]-10), (left+labelSize[0], label_top+baseLine-10), (255, 255, 255), cv2.FILLED) # Draw white box to put label text in
         cv2.putText(image, label, (left, label_top-7), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 0), 2) # Draw label text
         
-    face_landmarks_list = face_recognition.face_landmarks(frame_rgb, model="large")
+    #face_landmarks_list = face_recognition.face_landmarks(frame_rgb, model="large")
 
-    for face_landmarks in face_landmarks_list:
+    #for face_landmarks in face_landmarks_list:
 
         # Print the location of each facial feature in this image
-        for facial_feature in face_landmarks.keys():
-            print("The {} in this face has the following points: {}".format(facial_feature, face_landmarks[facial_feature]))
+    #    for facial_feature in face_landmarks.keys():
+    #        print("The {} in this face has the following points: {}".format(facial_feature, face_landmarks[facial_feature]))
 
         # Let's trace out each facial feature in the image with a line!
-        for facial_feature in face_landmarks.keys():
+    #    for facial_feature in face_landmarks.keys():
             #print(f'point : {face_landmarks[facial_feature][0]}, {face_landmarks[facial_feature][1]}')
-            if len(face_landmarks[facial_feature]) == 1 :
-                cv2.line(image, face_landmarks[facial_feature][0], face_landmarks[facial_feature][0], (255, 255, 255), 2)
-            else :
-                cv2.line(image, face_landmarks[facial_feature][0], face_landmarks[facial_feature][1], (255, 255, 255), 2)
+    #        if len(face_landmarks[facial_feature]) == 1 :
+    #            cv2.line(image, face_landmarks[facial_feature][0], face_landmarks[facial_feature][0], (255, 255, 255), 2)
+    #        else :
+    #            cv2.line(image, face_landmarks[facial_feature][0], face_landmarks[facial_feature][1], (255, 255, 255), 2)
     if is_showing :
         cv2.imshow('Object detector', image)
         
