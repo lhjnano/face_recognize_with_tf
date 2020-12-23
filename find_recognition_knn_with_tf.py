@@ -22,7 +22,7 @@ else:
     
 TF_MODEL_DIRECTORY = 'tflite_graph'
 TF_GRAPH_NAME ='face.tflite'
-TF_GRAPH_PATH =  os.path.join(TF_MODEL_DIRECTORY, TF_GRAPH_NAME)
+TF_GRAPH_PATH =  os.path.join('face_recognize_with_tf', TF_MODEL_DIRECTORY, TF_GRAPH_NAME)
 FACE_THRESHOLD = 0.7
 interpreter = Interpreter(model_path=TF_GRAPH_PATH)
 interpreter.allocate_tensors()
@@ -163,7 +163,7 @@ def predict_faces(knn_clf, image, X_face_locations) :
     # Predict classes and remove classifications that aren't within the threshold
     return [(pred, loc) if rec else ("unknown", loc) for pred, loc, rec in zip(knn_clf.predict(faces_encodings), X_face_locations, are_matches)]
 
-def show_prediction(image, predictions, is_showing=false) :
+def show_prediction(image, predictions, is_showing=False) :
 
     frame_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     
@@ -184,11 +184,8 @@ def show_prediction(image, predictions, is_showing=false) :
         cv2.rectangle(image, (left, label_top-labelSize[1]-10), (left+labelSize[0], label_top+baseLine-10), (255, 255, 255), cv2.FILLED) # Draw white box to put label text in
         cv2.putText(image, label, (left, label_top-7), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 0), 2) # Draw label text
         
-    #face_landmarks_list = face_recognition.face_landmarks(frame_rgb, model="large")
-    timestamp = time.time()
     face_landmarks_list = face_recognition.face_landmarks(frame_rgb, model="large")
-    print(f'randmark : {time.time() - timestamp}s ')
-    #print(f'{len(face_landmarks_list)}')
+
     for face_landmarks in face_landmarks_list:
 
         # Print the location of each facial feature in this image
