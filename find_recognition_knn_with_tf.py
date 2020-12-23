@@ -163,7 +163,7 @@ def predict_faces(knn_clf, image, X_face_locations) :
     # Predict classes and remove classifications that aren't within the threshold
     return [(pred, loc) if rec else ("unknown", loc) for pred, loc, rec in zip(knn_clf.predict(faces_encodings), X_face_locations, are_matches)]
 
-def show_prediction(image, predictions) :
+def show_prediction(image, predictions, is_showing=false) :
 
     frame_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     
@@ -202,8 +202,10 @@ def show_prediction(image, predictions) :
                 cv2.line(image, face_landmarks[facial_feature][0], face_landmarks[facial_feature][0], (255, 255, 255), 2)
             else :
                 cv2.line(image, face_landmarks[facial_feature][0], face_landmarks[facial_feature][1], (255, 255, 255), 2)
-    cv2.imshow('Object detector', image)
-    
+    if is_showing :
+        cv2.imshow('Object detector', image)
+        
+    return image
 
 
 if __name__ == "__main__":
@@ -221,6 +223,16 @@ if __name__ == "__main__":
     video = cv2.VideoCapture(VIDEO_PATH)
     imgW = video.get(cv2.CAP_PROP_FRAME_WIDTH)
     imgH = video.get(cv2.CAP_PROP_FRAME_HEIGHT)
+    frames_per_second = video.get(cv2.CAP_PROP_FPS)
+    
+    OUTPUT_FILE_NAME = "output.mp4"
+    OUTPUT_FILE_PATH = os.path.join(CWD_PATH, OUTPUT_FILE_NAME)
+    output_file = cv2.VideoWriter(
+            filename=OUTPUT_FILE_NAME,
+            fourcc=cv2.VideoWriter_fourcc(*"x264"),
+            fps=float(frames_per_second),
+            frameSize=(int(imgW), int(imgH)),
+            isColor=True)
     
     while(video.isOpened()) :
         
@@ -229,38 +241,17 @@ if __name__ == "__main__":
             print('Reached the end of the video!')
             break
             
-        #timestamp = time.time()
         locations = reco_faces(frame, imgW, imgH)
-        #print(f'face    : {time.time()-timestamp}s')
-        #timestamp = time.time()
         frame_resized = cv2.resize(frame, (0, 0), fx=float(1/ZOOM), fy=float(1/ZOOM))
         predictions = predict_faces(fnn_clf, frame_resized, locations)
-        
 
-        
-        #print(f'predict : {time.time()-timestamp}s')
-        show_prediction(frame, predictions)
-        
+        prediction_frame = show_prediction(frame, predictions)
+        output_file.write(prediction_frame)
         if cv2.waitKey(1) == ord('q'):
             break
             
     video.release()
+    output_file.release()
     cv2.destroyAllWindows()
 
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
+
