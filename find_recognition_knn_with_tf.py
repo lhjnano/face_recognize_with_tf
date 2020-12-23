@@ -20,6 +20,8 @@ if pkg:
 else:
     from tensorflow.lite.python.interpreter import Interpreter
     
+FACES = 1 
+
 TF_MODEL_DIRECTORY = 'tflite_graph'
 TF_GRAPH_NAME ='face.tflite'
 TF_GRAPH_PATH =  os.path.join('face_recognize_with_tf', TF_MODEL_DIRECTORY, TF_GRAPH_NAME)
@@ -157,7 +159,7 @@ def predict_faces(knn_clf, image, X_face_locations) :
     faces_encodings = face_recognition.face_encodings(image, known_face_locations=X_face_locations, model='large')
     #print(f'faces_encodings : {time.time()-timestamp}s')
     # Use the KNN model to find the best matches for the test face
-    closest_distances = knn_clf.kneighbors(faces_encodings, n_neighbors=2)
+    closest_distances = knn_clf.kneighbors(faces_encodings, n_neighbors=FACES)
     are_matches = [closest_distances[0][i][0] <= distance_threshold for i in range(len(X_face_locations))]
 
     # Predict classes and remove classifications that aren't within the threshold
@@ -209,7 +211,7 @@ if __name__ == "__main__":
     # STEP 1: Train the KNN classifier and save it to disk
     # Once the model is trained and saved, you can skip this step next time.
     print("Training KNN classifier...")
-    classifier = train("knn_examples/train", model_save_path="trained_knn_model.clf", n_neighbors=2)
+    classifier = train("knn_examples/train", model_save_path="trained_knn_model.clf", n_neighbors=FACES)
     print("Training complete!")
 
     # STEP 2: Using the trained classifier, make predictions for unknown images
